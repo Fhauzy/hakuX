@@ -219,7 +219,11 @@ object Controllers {
     val gamepad = (d.sources and InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD
     val joystick = (d.sources and InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK
     if (!gamepad && !joystick) return false
-    return d.getMotionRange(MotionEvent.AXIS_X) != null && d.getMotionRange(MotionEvent.AXIS_Y) != null
+    /* Analog sticks, or at least a hat (a pad in digital mode, or a PlayStation-style
+     * clone, reports only the d-pad as a hat). */
+    val sticks = d.getMotionRange(MotionEvent.AXIS_X) != null && d.getMotionRange(MotionEvent.AXIS_Y) != null
+    val hat = d.getMotionRange(MotionEvent.AXIS_HAT_X) != null && d.getMotionRange(MotionEvent.AXIS_HAT_Y) != null
+    return sticks || hat
   }
 
   /** The connected controllers, by device id. */
